@@ -11,13 +11,8 @@ import {
 import styles from './app.module.scss';
 
 export const App = () => {
-	const [articleParams, setArticleParams] = useState<ArticleStateType>({
-		fontFamilyOption: defaultArticleState.fontFamilyOption,
-		fontSizeOption: defaultArticleState.fontSizeOption,
-		fontColor: defaultArticleState.fontColor,
-		contentWidth: defaultArticleState.contentWidth,
-		backgroundColor: defaultArticleState.backgroundColor,
-	});
+	const [articleParams, setArticleParams] =
+		useState<ArticleStateType>(defaultArticleState);
 
 	return (
 		<main

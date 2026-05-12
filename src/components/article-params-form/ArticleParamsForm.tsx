@@ -26,30 +26,16 @@ type ArticleParamsFormType = {
 export const ArticleParamsForm = (props: ArticleParamsFormType) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const asideRef = useRef<HTMLElement | null>(null);
-	const [fontFamily, setFontFamily] = useState(props.params.fontFamilyOption);
-	const [fontSize, setFontSize] = useState(props.params.fontSizeOption);
-	const [fontColor, setFontColor] = useState(props.params.fontColor);
-	const [bgColor, setBgColor] = useState(props.params.backgroundColor);
-	const [contentWidth, setContentWidth] = useState(props.params.contentWidth);
+	const [formState, setFormState] = useState(defaultArticleState);
 
 	const handleClear = () => {
-		setFontFamily(defaultArticleState.fontFamilyOption);
-		setFontSize(defaultArticleState.fontSizeOption);
-		setFontColor(defaultArticleState.fontColor);
-		setBgColor(defaultArticleState.backgroundColor);
-		setContentWidth(defaultArticleState.contentWidth);
+		setFormState(defaultArticleState);
 		props.onChange?.(defaultArticleState);
 		setIsOpen(false);
 	};
 
 	function chageProps() {
-		props.onChange?.({
-			fontFamilyOption: fontFamily,
-			fontSizeOption: fontSize,
-			fontColor: fontColor,
-			backgroundColor: bgColor,
-			contentWidth: contentWidth,
-		});
+		props.onChange?.(formState);
 	}
 
 	const handleSubmit = (e: SyntheticEvent) => {
@@ -67,11 +53,15 @@ export const ArticleParamsForm = (props: ArticleParamsFormType) => {
 				setIsOpen(false);
 			}
 		};
-		document.addEventListener('mousedown', handleClickOutside);
+		if (isOpen === true) {
+			document.addEventListener('mousedown', handleClickOutside);
+		} else {
+			document.removeEventListener('mousedown', handleClickOutside);
+		}
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [asideRef, setIsOpen]);
+	}, [asideRef, isOpen]);
 
 	return (
 		<>
@@ -84,36 +74,61 @@ export const ArticleParamsForm = (props: ArticleParamsFormType) => {
 						Задайте параметры
 					</Text>
 					<Select
-						selected={fontFamily}
+						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						title='Шрифт'
-						onChange={setFontFamily}
+						onChange={(newFont) => {
+							setFormState((prevState) => ({
+								...prevState,
+								fontFamilyOption: newFont,
+							}));
+						}}
 					/>
 					<RadioGroup
 						name='radio'
-						selected={fontSize}
+						selected={formState.fontSizeOption}
 						options={fontSizeOptions}
 						title='Размер шрифта'
-						onChange={setFontSize}
+						onChange={(newFontSize) => {
+							setFormState((prevState) => ({
+								...prevState,
+								fontSizeOption: newFontSize,
+							}));
+						}}
 					/>
 					<Select
-						selected={fontColor}
+						selected={formState.fontColor}
 						options={fontColors}
 						title='Цвет шрифта'
-						onChange={setFontColor}
+						onChange={(newFontColor) => {
+							setFormState((prevState) => ({
+								...prevState,
+								fontColor: newFontColor,
+							}));
+						}}
 					/>
 					<Separator />
 					<Select
-						selected={bgColor}
+						selected={formState.backgroundColor}
 						options={backgroundColors}
 						title='Цвет фона'
-						onChange={setBgColor}
+						onChange={(newBgColor) => {
+							setFormState((prevState) => ({
+								...prevState,
+								backgroundColor: newBgColor,
+							}));
+						}}
 					/>
 					<Select
-						selected={contentWidth}
+						selected={formState.contentWidth}
 						options={contentWidthArr}
 						title='ширина контента'
-						onChange={setContentWidth}
+						onChange={(newContentWidth) => {
+							setFormState((prevState) => ({
+								...prevState,
+								contentWidth: newContentWidth,
+							}));
+						}}
 					/>
 					<div className={styles.bottomContainer}>
 						<Button
